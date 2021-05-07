@@ -9,6 +9,21 @@ booksRouter.get('/', (req, res) => {
   });
 });
 
+booksRouter.get('/:id', (req, res) => {
+  const id = req.params.id;
+
+  Book.findById(id).then(book => {
+    if(book) {
+      res.json(book);
+    }
+    else {
+      res.json({
+        error: 'Book not found'
+      });
+    }
+  });
+});
+
 booksRouter.post('/', (req, res) => {
   const { title, author, totalPages } = req.body;
 
@@ -20,6 +35,21 @@ booksRouter.post('/', (req, res) => {
 
   book.save().then(createdBook => {
     res.status(201).send({ id: createdBook._id });
+  });
+});
+
+booksRouter.put('/:id', (req, res) => {
+  const { id } = req.params
+  const { title, author, totalPages } = req.body;
+
+  const book = {
+    title,
+    author,
+    totalPages
+  };
+
+  book.updateOne({_id: id}, book).then(() => {
+    res.status(200).send();
   });
 });
 
