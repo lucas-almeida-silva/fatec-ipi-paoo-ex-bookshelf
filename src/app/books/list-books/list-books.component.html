@@ -17,7 +17,9 @@
       {{book.totalPages}}
     </p>
     <mat-action-row>
-      <button mat-button color="primary">Editar</button>
+      <button mat-button color="primary" [routerLink]="['edit', book.id]">
+        Editar
+      </button>
       <button mat-button color="warn" (click)="handleRemoveBook(book.id)">
         Remover
       </button>
@@ -25,10 +27,8 @@
   </mat-expansion-panel>
 </mat-accordion>
 
-<div class="loading">
-  <mat-spinner mode="indeterminate" *ngIf="loading"></mat-spinner>
-</div>
+<mat-spinner mode="indeterminate" *ngIf="isLoading"></mat-spinner>
 
-<p class="any-book" *ngIf="!books.length && !loading">
+<p class="any-book" *ngIf="!books.length && !isLoading">
   Nenhum livro cadastrado
 </p>

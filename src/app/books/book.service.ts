@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { Book } from './book.model';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,10 @@ export class BookService {
   private $books = new Subject<Book[]>();
   private apiUrl = environment.apiUrl;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router
+  ) {
 
   }
 
@@ -27,16 +31,37 @@ export class BookService {
     );
   }
 
+  getBook(id: string): Observable<Book> {
+    return this.httpClient.get<Book>(`${this.apiUrl}/books/${id}`);
+  }
+
   addBook(book: Omit<Book, 'id'>): void {
     this.httpClient.post<{id: string}>(`${this.apiUrl}/books`, book).subscribe(
       ({id}) => {
         this.books.push({id, ...book});
         this.updateBooksSubject();
+        this.router.navigateByUrl('/');
       }
     );
   }
 
-  deleteBook(id: string) {
+  updateBook(book: Book): void {
+    const bookId = book.id;
+
+    const updateBook = { ...book };
+    delete updateBook.id
+
+    this.httpClient.put(`${this.apiUrl}/books/${bookId}`, updateBook).subscribe(
+      () => {
+        const index = this.books.findIndex(book => book.id === bookId);
+        this.books[index] = book;
+        this.$books.next([...this.books]);
+        this.router.navigateByUrl('/');
+      }
+    );
+  }
+
+  deleteBook(id: string): void {
     this.httpClient.delete(`${this.apiUrl}/books/${id}`).subscribe(
       () => {
         this.books = this.books.filter(book => book.id !== id);

@@ -30,10 +30,8 @@ mat-accordion mat-expansion-panel mat-action-row button {
   font-size: 1rem;
 }
 
-.loading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+mat-spinner {
+  margin: auto;
 }
 
 p.any-book {

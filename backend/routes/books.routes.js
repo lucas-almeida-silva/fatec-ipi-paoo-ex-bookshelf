@@ -17,7 +17,7 @@ booksRouter.get('/:id', (req, res) => {
       res.json(book);
     }
     else {
-      res.json({
+      res.status(404).json({
         error: 'Book not found'
       });
     }
@@ -48,7 +48,7 @@ booksRouter.put('/:id', (req, res) => {
     totalPages
   };
 
-  book.updateOne({_id: id}, book).then(() => {
+  Book.updateOne({_id: id}, book).then(() => {
     res.status(200).send();
   });
 });

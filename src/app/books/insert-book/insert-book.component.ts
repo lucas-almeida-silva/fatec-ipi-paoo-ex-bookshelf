@@ -1,6 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Book } from '../book.model';
 import { BookService } from '../book.service';
@@ -10,11 +10,37 @@ import { BookService } from '../book.service';
   templateUrl: './insert-book.component.html',
   styleUrls: ['./insert-book.component.css']
 })
-export class InsertBookComponent {
+export class InsertBookComponent implements OnInit {
+  book: Book;
+  isLoading = false;
+
   @ViewChild('registerBookForm') registerBookForm: NgForm;
 
-  constructor(private bookService: BookService, private router: Router) {
+  constructor(
+    private bookService: BookService,
+    private activatedRoute: ActivatedRoute
+  ) {
 
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      if(params.has('id')) {
+        this.isLoading = true;
+
+        const bookId = params.get('id');
+
+        this.bookService.getBook(bookId).subscribe(
+          (book) => {
+            this.book = book;
+            this.isLoading = false;
+          },
+          () => {
+            this.isLoading = false;
+          }
+        );
+      }
+    });
   }
 
   handleSubmit() {
@@ -22,8 +48,11 @@ export class InsertBookComponent {
 
     const book = this.registerBookForm.value as Book;
 
-    this.bookService.addBook(book);
-
-    this.router.navigateByUrl('/');
+    if(this.book) {
+      this.bookService.updateBook({id: this.book.id, ...book});
+    }
+    else {
+      this.bookService.addBook(book);
+    }
   }
 }

@@ -1,8 +1,8 @@
-<mat-card>
+<mat-card *ngIf="!isLoading">
   <form (ngSubmit)="handleSubmit()" #registerBookForm="ngForm">
     <mat-form-field appearance="outline">
       <mat-label>Título</mat-label>
-      <input matInput name="title" ngModel required minlength="3">
+      <input matInput name="title" [ngModel]="book?.title" required minlength="3">
       <mat-error *ngIf="registerBookForm.controls.title?.hasError('required')">
         Campo obrigatório
       </mat-error>
@@ -13,7 +13,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Author</mat-label>
-      <input matInput name="author" required ngModel>
+      <input matInput name="author" [ngModel]="book?.author" required>
       <mat-error *ngIf="registerBookForm.controls.author?.hasError('required')">
         Campo obrigatório
       </mat-error>
@@ -24,7 +24,13 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Total de Páginas</mat-label>
-      <input type="number" matInput name="totalPages" ngModel required>
+      <input
+        type="number"
+        matInput
+        name="totalPages"
+        [ngModel]="book?.totalPages"
+        required
+      >
       <mat-error *ngIf="registerBookForm.controls.totalPages?.hasError('required')">
         Campo obrigatório
         {{handleSubmit()}}
@@ -36,7 +42,9 @@
       mat-raised-button
       color="primary"
     >
-      Adicionar
+      Salvar
     </button>
   </form>
 </mat-card>
+
+<mat-spinner mode="indeterminate" *ngIf="isLoading"></mat-spinner>

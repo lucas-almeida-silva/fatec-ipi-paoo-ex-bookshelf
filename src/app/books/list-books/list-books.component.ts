@@ -11,7 +11,7 @@ import { BookService } from '../book.service';
 })
 export class ListBooksComponent implements OnInit, OnDestroy {
   books: Book[] = [];
-  loading = true;
+  isLoading = true;
   private booksSubscription: Subscription;
 
   constructor(private bookService: BookService) {
@@ -21,15 +21,15 @@ export class ListBooksComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.bookService.getBooks();
 
-
     this.booksSubscription = this.bookService.getBooksObservable().subscribe(
       (books: Book[]) => {
         this.books = books;
-        this.loading = false;
+        this.isLoading = false;
+      },
+      () => {
+        this.isLoading = false;
       }
     );
-
-
   }
 
   ngOnDestroy(): void {
