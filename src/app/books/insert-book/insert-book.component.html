@@ -1,47 +1,39 @@
 <mat-card *ngIf="!isLoading">
-  <form (ngSubmit)="handleSubmit()" #registerBookForm="ngForm">
+  <form [formGroup]="bookForm" (ngSubmit)="handleSubmit()">
     <mat-form-field appearance="outline">
       <mat-label>Título</mat-label>
-      <input matInput name="title" [ngModel]="book?.title" required minlength="3">
-      <mat-error *ngIf="registerBookForm.controls.title?.hasError('required')">
+      <input matInput name="title" formControlName="title">
+      <mat-error *ngIf="bookForm.get('title').hasError('required')">
         Campo obrigatório
       </mat-error>
-      <mat-error *ngIf="registerBookForm.controls.title?.hasError('minlength')">
+      <mat-error *ngIf="bookForm.get('title').hasError('minlength')">
         O nome deve ter no mínimo 3 caracteres
       </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Author</mat-label>
-      <input matInput name="author" [ngModel]="book?.author" required>
-      <mat-error *ngIf="registerBookForm.controls.author?.hasError('required')">
+      <input matInput name="author" formControlName="author">
+      <mat-error *ngIf="bookForm.get('author').hasError('required')">
         Campo obrigatório
       </mat-error>
-      <mat-error *ngIf="registerBookForm.controls.title?.hasError('minlength')">
+      <mat-error *ngIf="bookForm.get('author').hasError('minlength')">
         O nome do autor deve ter no mínimo 3 caracteres
       </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Total de Páginas</mat-label>
-      <input
-        type="number"
-        matInput
-        name="totalPages"
-        [ngModel]="book?.totalPages"
-        required
-      >
-      <mat-error *ngIf="registerBookForm.controls.totalPages?.hasError('required')">
+      <input type="number" matInput name="totalPages" formControlName="totalPages">
+      <mat-error *ngIf="bookForm.get('totalPages').hasError('required')">
         Campo obrigatório
-        {{handleSubmit()}}
+      </mat-error>
+      <mat-error *ngIf="bookForm.get('totalPages').hasError('min')">
+        O número de página deve ser maior que 0
       </mat-error>
     </mat-form-field>
 
-    <button
-      type="submit"
-      mat-raised-button
-      color="primary"
-    >
+    <button type="submit" mat-raised-button color="primary">
       Salvar
     </button>
   </form>
